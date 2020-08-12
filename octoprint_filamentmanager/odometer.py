@@ -12,6 +12,8 @@ class FilamentOdometer(object):
 
     regexE = re.compile(r'.*E(-?\d+(\.\d+)?)')
     regexT = re.compile(r'^T(\d+)')
+    #regexPT = re.compile(r'\;\-\- P2PP \-\- removed \[Color Change\] \- T(\d+)')
+    regexPT = re.compile(r'^P(\d+)')
 
     def __init__(self):
         self.g90_extruder = True
@@ -31,6 +33,16 @@ class FilamentOdometer(object):
         self.totalExtrusion = [0.0] * tools
 
     def parse(self, gcode, cmd):
+        if cmd.startswith("P"):
+            t = self._get_int(cmd, self.regexPT)
+            if t is not None:
+                self.currentTool = t
+                if len(self.lastExtrusion) <= self.currentTool:
+                    for i in xrange(len(self.lastExtrusion), self.currentTool + 1):
+                        self.lastExtrusion.append(0.0)
+                        self.totalExtrusion.append(0.0)
+                        self.maxExtrusion.append(0.0)
+
         if gcode is None:
             return
 
