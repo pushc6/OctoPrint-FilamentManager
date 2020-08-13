@@ -22,7 +22,9 @@ or manually using this URL:
 
 1. For PostgreSQL support you need to install an additional dependency:
 
-    `pip install psycopg2`
+    `apt-get install libpq-dev`
+
+    `pip install psycopg2` -Should be done by setup.py now. libpq-dev required
 
 ## Screenshots
 
